@@ -1,9 +1,7 @@
 package com.example.NutriPal.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,8 +13,14 @@ import lombok.NoArgsConstructor;
 public class Role {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long roleId;
 
-    private String name;
+    @Column(nullable = false, length = 100, name = "role_name")
+    @NotBlank(message = "Role name must be required.")
+    private String roleName;
+
+    public String getName() {
+        return null;
+    }
 }
