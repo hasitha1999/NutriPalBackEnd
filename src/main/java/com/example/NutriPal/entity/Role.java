@@ -19,4 +19,8 @@ public class Role {
     @Column(nullable = false, length = 100, name = "role_name")
     @NotBlank(message = "Role name must be required.")
     private String roleName;
+
+    public String getName() {
+        return null;
+    }
 }
