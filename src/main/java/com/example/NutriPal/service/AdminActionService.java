@@ -13,10 +13,6 @@ import java.util.Optional;
 public class AdminActionService {
     private final UserRepository userRepository;
     private final AppConfigRepository appConfigRepository;
-
-
-
-
     public AppConfig getAppConfig(String property) throws Exception {
 
         Optional<AppConfig> appConfigOptional = appConfigRepository.findByProperty(property);
