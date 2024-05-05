@@ -5,10 +5,13 @@ import com.example.NutriPal.dto.AuthenticationResponse;
 import com.example.NutriPal.entity.User;
 import com.example.NutriPal.service.AuthService;
 import jakarta.validation.Valid;
+
+import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,33 +21,48 @@ public class AuthController {
 
     private final AuthService authService;
 
-    @PostMapping("/register")
-    public ResponseEntity<?> register(@Valid @RequestBody User user) {
-
-        try{
-            authService.register(user);
-            return new ResponseEntity<>(HttpStatus.CREATED);
-        }catch (IllegalArgumentException ex) {
-            return ResponseEntity.badRequest().body(Map.of("email", "Email exists"));
-        }catch (Exception ex) {
-            return ResponseEntity.badRequest().body(Map.of("userRef", "User ref not exists"));
-        }
+    @PostMapping("/createOrUpdateUser")
+    public ResponseEntity<User> addUser(@RequestBody User user) {
+                try {
+                    return ResponseEntity.ok(authService.addUser(user));
+                } catch (Exception e) {
+                    return ResponseEntity.badRequest().build();
+                }
     }
 
-    @PostMapping("/email-verification/{verificationToken}")
-    public ResponseEntity<AuthenticationResponse> emailVerification(@PathVariable String verificationToken) {
-
+    @GetMapping("/getAllUsers")
+    public ResponseEntity<List<User>> loadAllusers() {
         try {
-            return ResponseEntity.ok(authService.verifyUserAndCreate(verificationToken));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.ok(authService.getAllUsers());
+        } catch(Exception ex) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+    @GetMapping("/getUserById")
+    public ResponseEntity<User> getUserById(Authentication authentication) {
+        try {
+            User user = (User) authentication.getPrincipal();
+            return ResponseEntity.ok(authService.getUserById(user));
+        } catch(Exception ex) {
+            return ResponseEntity.notFound().build();
         }
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<AuthenticationResponse> login(@RequestBody AuthenticationRequest authenticationRequest) {
 
-        return ResponseEntity.ok(authService.authenticate(authenticationRequest));
-    }
+//    @PostMapping("/email-verification/{verificationToken}")
+//    public ResponseEntity<AuthenticationResponse> emailVerification(@PathVariable String verificationToken) {
+//
+//        try {
+//            return ResponseEntity.ok(authService.verifyUserAndCreate(verificationToken));
+//        } catch (Exception e) {
+//            return ResponseEntity.badRequest().build();
+//        }
+//    }
+
+//    @PostMapping("/login")
+//    public ResponseEntity<AuthenticationResponse> login(@RequestBody AuthenticationRequest authenticationRequest) {
+//
+//        return ResponseEntity.ok(authService.authenticate(authenticationRequest));
+//    }
 
 }

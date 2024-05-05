@@ -27,8 +27,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 public class User implements UserDetails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long userId;
 
     @NotBlank(message = "First Name is required")
     private String firstName;
@@ -39,10 +39,11 @@ public class User implements UserDetails {
     private String gender;
     private String dob;
     private String phone;
-    private String address;
-    private String city;
-    private String zipCode;
-    private String country;
+    private String goal;
+
+    private int activeLevel;
+    private double weight;
+    private double height;
 
     @NotBlank(message = "Email is required")
     @Email(message = "Email is not valid", regexp = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$")
@@ -52,26 +53,19 @@ public class User implements UserDetails {
     @Column(columnDefinition = "TEXT")
     private String password;
 
-    @Column(columnDefinition = "TIMESTAMP")
-    private LocalDateTime registeredDateTime;
-
-    private Double totalBalance;
-    private Double maximumRevenue;
-    private Double totalRevenue;
     private Boolean isDeleted = false;
     private Boolean isActive = true;
+
     @ManyToOne
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
-    private Long ParentRef;
 
     @Override
     @JsonDeserialize(using = CustomAuthorityDeserializer.class)
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.getName()));
     }
-
     @Override
     public String getUsername() {
         return email;
