@@ -2,6 +2,7 @@ package com.example.NutriPal.service;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -25,85 +26,21 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class AuthService {
-
     private final UserRepository userRepository;
-    private final JwtService jwtService;
-    private final AuthenticationManager authenticationManager;
-    private final JavaMailSender emailSender;
-    private final PasswordEncoder passwordEncoder;
-    private final RoleRepository roleRepository;
-    private final StringHelpers stringHelpers;
-
-    @Value("${spring.mail.noreply}")
-    private String noReplyEMail;
-
-    @Value("${app.domain}")
-    private String appDomain;
-
-    private final static Map<String, User> UNVERIFIED_USERS = new HashMap<>();
-
-    public void register(User user) throws Exception {
-
-
-        if(userRepository.findByEmail(user.getEmail()).isPresent()) {
-            throw new IllegalArgumentException();
-        }
-
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRole(roleRepository.findByName("USER").orElse(null));
-        user.setIsDeleted(false);
+    public User addUser(User user){
         user.setIsActive(true);
-        user.setRegisteredDateTime(LocalDateTime.now());
-        user.setTotalBalance(0.0);
-        user.setTotalRevenue(0.0);
-        user.setMaximumRevenue(0.0);
+        user.setIsDeleted(false);
+       User savedUser =  userRepository.saveAndFlush(user);
 
-        String verificationToken = stringHelpers.generateRandomStringUsingEmail(user.getEmail());
-        UNVERIFIED_USERS.put(verificationToken, user);
-
-        // send activation link
-        Thread emailThread = new Thread(() -> {
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom(noReplyEMail);
-            message.setTo(user.getEmail());
-            message.setSubject("Dream the Future | Email Verification");
-            message.setText(
-                "Use the following link to Verify your email. \n\n" +
-                    appDomain + "/email-verification/" + verificationToken
-
-            );
-            emailSender.send(message);
-        });
-        emailThread.start();
+       return savedUser;
     }
 
-//    @Transactional
-    public AuthenticationResponse verifyUserAndCreate(String verificationToken) throws Exception {
-        User user = UNVERIFIED_USERS.remove(verificationToken);
-
-        if(user == null) {
-            throw new Exception("Invalid Token");
-        }
-
-        userRepository.save(user);
-
-        // generate token
-        String jwtToken = jwtService.generateToken(user);
-        return AuthenticationResponse.builder().token(jwtToken).role(user.getRole().getName()).build();
+    public List<User> getAllUsers(){
+        return userRepository.findAll();
     }
 
-    public AuthenticationResponse authenticate(AuthenticationRequest authenticationRequest) {
-
-        authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(
-                authenticationRequest.getEmail(),
-                authenticationRequest.getPassword()
-            )
-        );
-
-        // generate token
-        User user = userRepository.findByEmail(authenticationRequest.getEmail()).orElseThrow();
-        String jwtToken = jwtService.generateToken(user);
-        return AuthenticationResponse.builder().token(jwtToken).role(user.getRole().getName()).build();
+    public User getUserById(User user){
+        return userRepository.findById(user.getUserId()).get();
     }
+
 }
