@@ -59,10 +59,10 @@ public class AuthController {
 //        }
 //    }
 
-//    @PostMapping("/login")
-//    public ResponseEntity<AuthenticationResponse> login(@RequestBody AuthenticationRequest authenticationRequest) {
-//
-//        return ResponseEntity.ok(authService.authenticate(authenticationRequest));
-//    }
+    @PostMapping("/login")
+    public ResponseEntity<AuthenticationResponse> login(@RequestBody AuthenticationRequest authenticationRequest) {
+
+        return ResponseEntity.ok(authService.authenticate(authenticationRequest));
+    }
 
 }
