@@ -1,5 +1,6 @@
 package com.example.NutriPal.service;
 
+import com.example.NutriPal.dto.DailyLogChartDto;
 import com.example.NutriPal.dto.DailyLogDto;
 import com.example.NutriPal.entity.DailyLog;
 import com.example.NutriPal.entity.LogType;
@@ -10,7 +11,9 @@ import com.example.NutriPal.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Optional;
 
 @Service
@@ -24,10 +27,10 @@ public class DailyLogService {
         LogType logType = logTypeRepository.findByType(dailyLogDto.getLogType()).get();
         DailyLog dailyLog;
         if(dailyLogDto.getLogId() == null){
-             dailyLog = DailyLog.builder().user(user).logType(logType).input_data(dailyLogDto.getUserInput()).build();
+             dailyLog = DailyLog.builder().user(user).logType(logType).inputData(dailyLogDto.getUserInput()).build();
         }else{
             dailyLog = dailyRepository.findById(dailyLogDto.getLogId()).get();
-            dailyLog.setInput_data(dailyLogDto.getUserInput());
+            dailyLog.setInputData(dailyLogDto.getUserInput());
         }
         if (logType.getType() == "Weight"){
             user.setWeight(dailyLogDto.getUserInput());
@@ -38,9 +41,27 @@ public class DailyLogService {
         return dailyRepository.saveAndFlush(dailyLog);
     }
 
-    public Optional<DailyLog> getDailyLogDetailsByCurrentDate(User user, String logCategory){
+    public Optional<DailyLog> getDailyLogDetailsByCurrentDate(User user, String logCategory, LocalDate dateTime){
         LogType logType = logTypeRepository.findByType(logCategory).get();
-
-        return  dailyRepository.findByCreatedAtAndUserAndLogType(LocalDateTime.now(),user,logType);
+        return  dailyRepository.findByCreatedAtAndUserAndLogType(dateTime,user,logType);
     }
+    public ArrayList<DailyLogChartDto> getDailyLogDataList(User user, String logCategory, LocalDate dateTime){
+        LogType logType = logTypeRepository.findByType(logCategory).get();
+        Optional<ArrayList<DailyLog>> dailyLogOptional = dailyRepository.findByCreatedAtAfterAndUserAndLogType(dateTime,user,logType);
+        ArrayList<DailyLogChartDto> dailyLogList = new ArrayList<>();
+
+        if(dailyLogOptional.isPresent()){
+            for (DailyLog logElement: dailyLogOptional.get()) {
+                DailyLogChartDto dailyLogChartDto = DailyLogChartDto.builder().date(logElement.getCreatedAt()).userInputValue(logElement.getInputData()).build();
+                dailyLogList.add(dailyLogChartDto);
+
+            }
+
+        }else{
+            dailyLogList = null;
+        }
+        return  dailyLogList;
+
+    }
+
 }
