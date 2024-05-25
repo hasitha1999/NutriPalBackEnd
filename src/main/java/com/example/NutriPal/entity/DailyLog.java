@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -28,10 +29,10 @@ public class DailyLog {
     private LogType logType;
 
 
-    private double input_data;
+    private double inputData;
 
     @Column(name = "`created_at`")
     @CreationTimestamp
-    private LocalDateTime createdAt;
+    private LocalDate createdAt;
 
 }
