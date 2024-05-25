@@ -1,8 +1,10 @@
 package com.example.NutriPal;
 
 import ch.qos.logback.core.encoder.Encoder;
+import com.example.NutriPal.entity.LogType;
 import com.example.NutriPal.entity.Role;
 import com.example.NutriPal.entity.User;
+import com.example.NutriPal.repository.LogTypeRepository;
 import com.example.NutriPal.repository.RoleRepository;
 import com.example.NutriPal.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.ArrayList;
+
 @SpringBootApplication
 @EnableScheduling
 public class NutriPalApplication implements CommandLineRunner {
@@ -19,6 +23,8 @@ public class NutriPalApplication implements CommandLineRunner {
 	private UserRepository userRepository;
 	@Autowired
 	private RoleRepository roleRepository;
+	@Autowired
+	private LogTypeRepository logTypeRepository;
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 	public static void main(String[] args) {
@@ -55,6 +61,28 @@ public class NutriPalApplication implements CommandLineRunner {
 			userRepository.save(userAdmin);
 			userRepository.save(user);
 
+		}
+		if (logTypeRepository.count() ==0){
+
+			ArrayList<LogType> logTypesList = new ArrayList<>();
+
+			LogType logTypeWater = LogType.builder()
+					.type("Water")
+					.build();
+
+			LogType logTypeCalorie = LogType.builder()
+					.type("Calorie")
+					.build();
+
+			LogType logTypeWeight = LogType.builder()
+					.type("Weight")
+					.build();
+
+			logTypesList.add(logTypeWater);
+			logTypesList.add(logTypeCalorie);
+			logTypesList.add(logTypeWeight);
+
+			logTypeRepository.saveAllAndFlush(logTypesList);
 		}
 	}
 
