@@ -1,5 +1,6 @@
 package com.example.NutriPal.controller;
 
+import com.example.NutriPal.dto.DailyLogChartDto;
 import com.example.NutriPal.dto.DailyLogDto;
 import com.example.NutriPal.entity.DailyLog;
 import com.example.NutriPal.entity.User;
@@ -7,11 +8,11 @@ import com.example.NutriPal.service.DailyLogService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Optional;
 
 @RestController
@@ -30,11 +31,12 @@ public class DailyLogController {
             return ResponseEntity.badRequest().build();
         }
     }
-    @PostMapping("/getDailyLogByCurrentDate")
-    public ResponseEntity<DailyLog> getDailyLogDetailsByCurrentDate(Authentication authentication, @RequestBody String logType){
+    @PostMapping("/getDailyLogByCurrentDate/{logType}")
+    public ResponseEntity<DailyLog> getDailyLogDetailsByCurrentDate(Authentication authentication,@PathVariable  String logType){
         try {
             User user = (User) authentication.getPrincipal();
-            Optional<DailyLog> dailyLogOptional =  dailyLogService.getDailyLogDetailsByCurrentDate(user,logType);
+            LocalDate dateTime = LocalDateTime.now().toLocalDate();
+            Optional<DailyLog> dailyLogOptional =  dailyLogService.getDailyLogDetailsByCurrentDate(user,logType,dateTime);
             DailyLog dailyLog;
             if(dailyLogOptional.isPresent()){
                 dailyLog = dailyLogOptional.get();
@@ -42,6 +44,17 @@ public class DailyLogController {
                 dailyLog = null;
             }
             return ResponseEntity.ok(dailyLog);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+    @PostMapping("/getDailyLogDataListByMonth/{logType}")
+    public ResponseEntity<ArrayList<DailyLogChartDto>> getDailyLogDataListByMonth(Authentication authentication, @PathVariable String logType){
+        try {
+            User user = (User) authentication.getPrincipal();
+            LocalDate dateTime = LocalDateTime.now().toLocalDate().minusMonths(1);
+            ArrayList<DailyLogChartDto> dailyLogOptional =  dailyLogService.getDailyLogDataList(user,logType,dateTime);
+            return ResponseEntity.ok(dailyLogOptional);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
