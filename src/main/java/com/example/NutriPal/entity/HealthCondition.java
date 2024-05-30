@@ -1,12 +1,11 @@
 package com.example.NutriPal.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -18,4 +17,7 @@ public class HealthCondition {
     private Long conditionId;
 
     private String conditionName;
+
+    @ManyToMany
+    Set<User> users;
 }
