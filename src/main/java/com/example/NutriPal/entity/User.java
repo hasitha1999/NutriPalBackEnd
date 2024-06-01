@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -60,6 +61,14 @@ public class User implements UserDetails {
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
+    @ManyToMany
+    Set<HealthCondition> healthConditions;
+
+    @OneToMany(mappedBy = "user")
+    Set<UserSchedule> userSchedules;
+
+    @OneToMany(mappedBy = "user")
+    Set<UserDietType> userDietTypes;
 
     @Override
     @JsonDeserialize(using = CustomAuthorityDeserializer.class)
