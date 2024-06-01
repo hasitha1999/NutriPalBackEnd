@@ -64,8 +64,11 @@ public class User implements UserDetails {
     @ManyToMany
     Set<HealthCondition> healthConditions;
 
-    @ManyToMany
-    Set<Schedule> schedules;
+    @OneToMany(mappedBy = "user")
+    Set<UserSchedule> userSchedules;
+
+    @OneToMany(mappedBy = "user")
+    Set<UserDietType> userDietTypes;
 
     @Override
     @JsonDeserialize(using = CustomAuthorityDeserializer.class)
