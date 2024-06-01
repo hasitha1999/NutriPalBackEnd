@@ -17,6 +17,7 @@ import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
+@CrossOrigin
 @RequestMapping("/api/daily-log")
 public class DailyLogController {
 
@@ -32,18 +33,11 @@ public class DailyLogController {
         }
     }
     @PostMapping("/getDailyLogByCurrentDate/{logType}")
-    public ResponseEntity<DailyLog> getDailyLogDetailsByCurrentDate(Authentication authentication,@PathVariable  String logType){
+    public ResponseEntity<DailyLogDto> getDailyLogDetailsByCurrentDate(Authentication authentication,@PathVariable  String logType){
         try {
             User user = (User) authentication.getPrincipal();
             LocalDate dateTime = LocalDateTime.now().toLocalDate();
-            Optional<DailyLog> dailyLogOptional =  dailyLogService.getDailyLogDetailsByCurrentDate(user,logType,dateTime);
-            DailyLog dailyLog;
-            if(dailyLogOptional.isPresent()){
-                dailyLog = dailyLogOptional.get();
-            }else{
-                dailyLog = null;
-            }
-            return ResponseEntity.ok(dailyLog);
+            return ResponseEntity.ok(dailyLogService.getDailyLogDetailsByCurrentDate(user,logType,dateTime));
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
