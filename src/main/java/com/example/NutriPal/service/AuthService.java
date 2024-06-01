@@ -50,13 +50,13 @@ public class AuthService {
 
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        authenticationRequest.getEmail(),
+                        authenticationRequest.getUserName(),
                         authenticationRequest.getPassword()
                 )
         );
 
         // generate token
-        User user = userRepository.findByEmail(authenticationRequest.getEmail()).orElseThrow();
+        User user = userRepository.findByUserName(authenticationRequest.getUserName()).orElseThrow();
         String jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder().token(jwtToken).role(user.getRole().getName()).build();
     }

@@ -31,6 +31,10 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long userId;
 
+    @NotBlank(message = "User Name is required")
+    @Column(unique = true)
+    private String userName;
+
     @NotBlank(message = "First Name is required")
     private String firstName;
 
