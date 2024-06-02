@@ -78,7 +78,7 @@ public class AuthService {
         return userRepository.findById(user.getUserId()).get();
     }
 
-    public void passwordReset(AuthenticationRequest authenticationRequest){
+    public void passwordResetSendMail(AuthenticationRequest authenticationRequest){
         User user = userRepository.findByUserName(authenticationRequest.getUserName()).orElseThrow();
         Thread emailThread = new Thread(() -> {
             SimpleMailMessage message = new SimpleMailMessage();
@@ -86,16 +86,21 @@ public class AuthService {
             message.setTo(user.getEmail());
             message.setSubject("Nutripal | Password Reset");
             message.setText(
-                    "Use the following link to Verify your email. \n\n" +
-                            appDomain + "/resetPassword?" + user.getUsername()
+                    "Use the following link to reset your password. \n\n" +
+                            appDomain + "/resetPassword?n=" + user.getUsername()
 
             );
             emailSender.send(message);
         });
             emailThread.start();
+    }
+    public void passwordReset(AuthenticationRequest authenticationRequest){
+        User user = userRepository.findByUserName(authenticationRequest.getUserName()).orElseThrow();
+        user.setPassword(passwordEncoder.encode(authenticationRequest.getPassword()));
 
-
+        userRepository.saveAndFlush(user);
 
     }
+
 
 }
