@@ -66,6 +66,11 @@ public class AuthController {
     }
     @PostMapping("/forgotPassword")
     public ResponseEntity<AuthenticationResponse> forgotPassword(@RequestBody AuthenticationRequest authenticationRequest) {
+        authService.passwordResetSendMail(authenticationRequest);
+        return ResponseEntity.ok().build();
+    }
+    @PostMapping("/resetPassword")
+    public ResponseEntity<AuthenticationResponse> forgotPasswordReset(@RequestBody AuthenticationRequest authenticationRequest) {
         authService.passwordReset(authenticationRequest);
         return ResponseEntity.ok().build();
     }
