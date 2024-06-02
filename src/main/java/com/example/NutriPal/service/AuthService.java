@@ -33,6 +33,15 @@ public class AuthService {
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
+    private final JavaMailSender emailSender;
+
+    @Value("${spring.mail.noreply}")
+    private String noReplyEMail;
+
+    @Value("${app.domain}")
+    private String appDomain;
+
+    private final static Map<String, User> UNVERIFIED_USERS = new HashMap<>();
     public User addUser(User user){
         Role roleUser = roleRepository.findById(2).get();
 
@@ -67,6 +76,26 @@ public class AuthService {
 
     public User getUserById(User user){
         return userRepository.findById(user.getUserId()).get();
+    }
+
+    public void passwordReset(AuthenticationRequest authenticationRequest){
+        User user = userRepository.findByUserName(authenticationRequest.getUserName()).orElseThrow();
+        Thread emailThread = new Thread(() -> {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom(noReplyEMail);
+            message.setTo(user.getEmail());
+            message.setSubject("Nutripal | Password Reset");
+            message.setText(
+                    "Use the following link to Verify your email. \n\n" +
+                            appDomain + "/resetPassword?" + user.getUsername()
+
+            );
+            emailSender.send(message);
+        });
+            emailThread.start();
+
+
+
     }
 
 }
