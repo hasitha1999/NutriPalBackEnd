@@ -31,9 +31,9 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long userId;
 
-    @NotBlank(message = "User Name is required")
+    @NotBlank(message = "gym Id is required")
     @Column(unique = true)
-    private String userName;
+    private String gymID;
 
     @NotBlank(message = "First Name is required")
     private String firstName;
@@ -81,7 +81,7 @@ public class User implements UserDetails {
     }
     @Override
     public String getUsername() {
-        return userName;
+        return gymID;
     }
 
     @Override

@@ -17,6 +17,8 @@ import com.example.NutriPal.utils.StringHelpers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -59,19 +61,22 @@ public class AuthService {
 
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        authenticationRequest.getUserName(),
+                        authenticationRequest.getGymID(),
                         authenticationRequest.getPassword()
                 )
         );
 
         // generate token
-        User user = userRepository.findByUserName(authenticationRequest.getUserName()).orElseThrow();
+        User user = userRepository.findByGymID(authenticationRequest.getGymID()).orElseThrow();
         String jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder().token(jwtToken).role(user.getRole().getName()).build();
     }
 
-    public List<User> getAllUsers(){
-        return userRepository.findAll();
+    public Map<String, Object> getAllUsers(int pageNumber, int pageSize, String globalFilter) {
+        Page<User> userPage = userRepository
+                .findAllUsers
+                        (PageRequest.of(pageNumber, pageSize), globalFilter, globalFilter, globalFilter);
+        return Map.of("data", userPage.stream().toList(), "count", userPage.getTotalElements());
     }
 
     public User getUserById(User user){
@@ -79,7 +84,7 @@ public class AuthService {
     }
 
     public void passwordResetSendMail(AuthenticationRequest authenticationRequest){
-        User user = userRepository.findByUserName(authenticationRequest.getUserName()).orElseThrow();
+        User user = userRepository.findByGymID(authenticationRequest.getGymID()).orElseThrow();
         Thread emailThread = new Thread(() -> {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom(noReplyEMail);
@@ -87,7 +92,7 @@ public class AuthService {
             message.setSubject("Nutripal | Password Reset");
             message.setText(
                     "Use the following link to reset your password. \n\n" +
-                            appDomain + "/resetPassword?n=" + user.getUsername()
+                            appDomain + "/resetPassword?n=" + user.getGymID()
 
             );
             emailSender.send(message);
@@ -95,7 +100,7 @@ public class AuthService {
             emailThread.start();
     }
     public void passwordReset(AuthenticationRequest authenticationRequest){
-        User user = userRepository.findByUserName(authenticationRequest.getUserName()).orElseThrow();
+        User user = userRepository.findByGymID(authenticationRequest.getGymID()).orElseThrow();
         user.setPassword(passwordEncoder.encode(authenticationRequest.getPassword()));
 
         userRepository.saveAndFlush(user);
