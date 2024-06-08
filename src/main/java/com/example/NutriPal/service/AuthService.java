@@ -1,10 +1,7 @@
 package com.example.NutriPal.service;
 
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.sql.Timestamp;
+import java.util.*;
 
 import com.example.NutriPal.config.JwtService;
 import com.example.NutriPal.dto.AuthenticationRequest;
@@ -13,9 +10,7 @@ import com.example.NutriPal.entity.Role;
 import com.example.NutriPal.entity.User;
 import com.example.NutriPal.repository.RoleRepository;
 import com.example.NutriPal.repository.UserRepository;
-import com.example.NutriPal.utils.StringHelpers;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,7 +20,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -87,23 +81,35 @@ public class AuthService {
         User user = userRepository.findByGymID(authenticationRequest.getGymID()).orElseThrow();
         Thread emailThread = new Thread(() -> {
             SimpleMailMessage message = new SimpleMailMessage();
+            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+            String timeInMillis =Long.toString(timestamp.getTime());
             message.setFrom(noReplyEMail);
             message.setTo(user.getEmail());
             message.setSubject("Nutripal | Password Reset");
             message.setText(
                     "Use the following link to reset your password. \n\n" +
-                            appDomain + "/resetPassword?n=" + user.getGymID()
-
+                            appDomain + "/resetPassword?n=" + Base64.getEncoder().encodeToString((timeInMillis + user.getGymID()).getBytes())
             );
             emailSender.send(message);
         });
             emailThread.start();
     }
-    public void passwordReset(AuthenticationRequest authenticationRequest){
-        User user = userRepository.findByGymID(authenticationRequest.getGymID()).orElseThrow();
-        user.setPassword(passwordEncoder.encode(authenticationRequest.getPassword()));
-
-        userRepository.saveAndFlush(user);
+    public String passwordReset(AuthenticationRequest authenticationRequest){
+        String decorded = new String(Base64.getDecoder().decode(authenticationRequest.getGymID()));
+        String timeStamp = decorded.substring(0,13);
+        String gymId = decorded.substring(13);
+        long timeStampReset = Long.parseLong(timeStamp);
+        long timeStampNow = new Timestamp(System.currentTimeMillis()).getTime();
+        long fifteenMinutesInMillis = 15 * 60 * 1000;
+        long difference = timeStampNow - timeStampReset;
+        if(difference < fifteenMinutesInMillis){
+            User user = userRepository.findByGymID(gymId).orElseThrow();
+            user.setPassword(passwordEncoder.encode(authenticationRequest.getPassword()));
+            userRepository.saveAndFlush(user);
+            return "Success";
+        }else{
+            return "Password Resetting Link Was Expired..!";
+        }
 
     }
 

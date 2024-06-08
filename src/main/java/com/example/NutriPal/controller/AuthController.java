@@ -6,6 +6,7 @@ import com.example.NutriPal.entity.User;
 import com.example.NutriPal.service.AuthService;
 import jakarta.validation.Valid;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -66,9 +67,8 @@ public class AuthController {
         return ResponseEntity.ok().build();
     }
     @PostMapping("/resetPassword")
-    public ResponseEntity<AuthenticationResponse> forgotPasswordReset(@RequestBody AuthenticationRequest authenticationRequest) {
-        authService.passwordReset(authenticationRequest);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<String> forgotPasswordReset(@RequestBody AuthenticationRequest authenticationRequest) {
+        return ResponseEntity.ok(authService.passwordReset(authenticationRequest));
     }
 
 }
