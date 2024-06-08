@@ -42,16 +42,15 @@ public class DailyLogService {
     }
 
     public DailyLogDto getDailyLogDetailsByCurrentDate(User user, String logCategory, LocalDate dateTime){
-        double userWeight  = user.getWeight();
         LogType logType = logTypeRepository.findByType(logCategory).get();
         Optional<DailyLog> dailyLogOptional = dailyRepository.findByCreatedAtAndUserAndLogType(dateTime,user,logType);
         DailyLogDto dailyLogDto = null;
         if(dailyLogOptional.isPresent()){
             DailyLog dailyLog = dailyLogOptional.get();
-             dailyLogDto = DailyLogDto.builder().logId(dailyLog.getLogID()).userInput(dailyLog.getInputData()).logType(dailyLog.getLogType().getType()).weight(userWeight).build();
+             dailyLogDto = DailyLogDto.builder().logId(dailyLog.getLogID()).userInput(dailyLog.getInputData()).logType(dailyLog.getLogType().getType()).weight(user.getWeight()).gender(user.getGender()).dob(user.getDob()).build();
         }
         else {
-            dailyLogDto = DailyLogDto.builder().weight(userWeight).build();
+            dailyLogDto = DailyLogDto.builder().weight(user.getWeight()).build();
         }
 
          return dailyLogDto;
