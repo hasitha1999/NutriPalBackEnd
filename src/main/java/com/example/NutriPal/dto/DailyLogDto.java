@@ -14,5 +14,7 @@ public class DailyLogDto {
     private String logType;
     private double userInput;
     private double weight;
+    private String gender;
+    private String dob;
 
 }
