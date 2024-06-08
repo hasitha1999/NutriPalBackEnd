@@ -37,7 +37,7 @@ public class NutriPalApplication implements CommandLineRunner {
 			Role roleUser = new Role(null, "USER");
 
 			User userAdmin = User.builder()
-					.userName("testAdmin")
+					.gymID("testAdmin")
 					.firstName("Test")
 					.lastName("Admin")
 					.email("testadmin@gmail.com")
@@ -49,7 +49,7 @@ public class NutriPalApplication implements CommandLineRunner {
 					.build();
 
 			User user = User.builder()
-					.userName("testUser")
+					.gymID("testUser")
 					.firstName("Test")
 					.lastName("User")
 					.email("hasithalakmal0617@gmail.com")

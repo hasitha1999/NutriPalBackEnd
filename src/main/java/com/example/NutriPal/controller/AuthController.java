@@ -29,15 +29,11 @@ public class AuthController {
                     return ResponseEntity.badRequest().build();
                 }
     }
-
     @GetMapping("/getAllUsers")
-    public ResponseEntity<List<User>> loadAllusers() {
-        try {
-            return ResponseEntity.ok(authService.getAllUsers());
-        } catch(Exception ex) {
-            return ResponseEntity.notFound().build();
-        }
+    public Map<String, Object> users(@RequestParam int pageNumber, @RequestParam int pageSize, @RequestParam String globalFilter) {
+        return authService.getAllUsers(pageNumber, pageSize, globalFilter.toLowerCase());
     }
+
     @GetMapping("/getUserById")
     public ResponseEntity<User> getUserById(Authentication authentication) {
         try {
@@ -66,6 +62,11 @@ public class AuthController {
     }
     @PostMapping("/forgotPassword")
     public ResponseEntity<AuthenticationResponse> forgotPassword(@RequestBody AuthenticationRequest authenticationRequest) {
+        authService.passwordResetSendMail(authenticationRequest);
+        return ResponseEntity.ok().build();
+    }
+    @PostMapping("/resetPassword")
+    public ResponseEntity<AuthenticationResponse> forgotPasswordReset(@RequestBody AuthenticationRequest authenticationRequest) {
         authService.passwordReset(authenticationRequest);
         return ResponseEntity.ok().build();
     }
