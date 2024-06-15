@@ -18,6 +18,10 @@ public class HealthCondition {
 
     private String conditionName;
 
-    @ManyToMany
-    Set<User> users;
+    @ManyToOne
+    @JoinColumn(name = "health_Condition_Type_Id", nullable = false)
+    private HealthConditionType healthConditionType;
+
+//    @ManyToMany
+//    Set<User> user;
 }

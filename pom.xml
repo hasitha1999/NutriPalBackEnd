@@ -8,11 +8,11 @@
 		<version>3.0.5</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>org.dtf202</groupId>
-	<artifactId>subscriber-service</artifactId>
+	<groupId>com.example.NutriPal</groupId>
+	<artifactId>nutripal-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>subscriber-service</name>
-	<description>subscriber-service</description>
+	<name>nutripal-service</name>
+	<description>nutripal-service</description>
 	<properties>
 		<java.version>17</java.version>
 	</properties>

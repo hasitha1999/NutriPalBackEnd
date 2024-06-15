@@ -95,9 +95,9 @@ public class AuthService {
             emailThread.start();
     }
     public String passwordReset(AuthenticationRequest authenticationRequest){
-        String decorded = new String(Base64.getDecoder().decode(authenticationRequest.getGymID()));
-        String timeStamp = decorded.substring(0,13);
-        String gymId = decorded.substring(13);
+        String decoded = new String(Base64.getDecoder().decode(authenticationRequest.getGymID()));
+        String timeStamp = decoded.substring(0,13);
+        String gymId = decoded.substring(13);
         long timeStampReset = Long.parseLong(timeStamp);
         long timeStampNow = new Timestamp(System.currentTimeMillis()).getTime();
         long fifteenMinutesInMillis = 15 * 60 * 1000;

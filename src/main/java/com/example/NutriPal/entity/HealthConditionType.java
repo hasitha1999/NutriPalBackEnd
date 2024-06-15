@@ -21,7 +21,4 @@ public class HealthConditionType {
     @NotBlank(message = "Health condition type is required")
     private String type;
 
-    @ManyToOne
-    @JoinColumn(name = "health_condition_id", nullable = false)
-    private HealthCondition healthCondition;
 }

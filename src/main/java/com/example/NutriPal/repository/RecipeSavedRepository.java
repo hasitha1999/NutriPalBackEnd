@@ -1,5 +1,6 @@
 package com.example.NutriPal.repository;
 
+import com.example.NutriPal.dto.RecipeWishListDTO;
 import com.example.NutriPal.entity.RecipeSaved;
 import com.example.NutriPal.entity.Role;
 import com.example.NutriPal.entity.User;

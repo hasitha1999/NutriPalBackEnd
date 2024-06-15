@@ -1,5 +1,6 @@
 package com.example.NutriPal.dto;
 
+import com.example.NutriPal.entity.RecipeSaved;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,8 +11,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RecipeWishListDTO {
-    private String recipeId;
-    private String recipeName;
-    private String description;
-    private String imageUrl;
+    private String recipieURI;
+
+    public RecipeWishListDTO(RecipeSaved recipeSaved) {
+        this.recipieURI = recipeSaved.getRecipeURI();
+    }
 }

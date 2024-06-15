@@ -24,6 +24,4 @@ public class DietType {
     @NotBlank(message = "Diet name is required")
     private String dietName;
 
-    @OneToMany(mappedBy = "dietType")
-    Set<UserDietType> userDietTypes;
 }

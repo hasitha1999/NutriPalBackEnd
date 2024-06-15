@@ -42,7 +42,7 @@ public class RecipeController {
         }
     }
     @PostMapping("/getAllSavedRecipes")
-    public ResponseEntity<ArrayList<RecipeSaved>> saveRecipe(Authentication authentication) {
+    public ResponseEntity<ArrayList<RecipeWishListDTO>> saveRecipe(Authentication authentication) {
         try {
             User user = (User) authentication.getPrincipal();
             return ResponseEntity.ok(recipeService.allSavedRecipes(user));
