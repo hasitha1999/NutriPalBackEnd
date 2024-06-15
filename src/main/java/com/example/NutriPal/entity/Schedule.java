@@ -22,7 +22,4 @@ public class Schedule {
 
     @NotBlank(message = "Schedule name is required")
     private String scheduleName;
-
-    @OneToMany(mappedBy = "schedule")
-    Set<UserSchedule> userSchedules;
 }

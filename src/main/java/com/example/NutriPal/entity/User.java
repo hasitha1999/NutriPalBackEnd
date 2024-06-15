@@ -65,14 +65,9 @@ public class User implements UserDetails {
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
-    @ManyToMany
-    Set<HealthCondition> healthConditions;
+//    @ManyToMany
+//    Set<HealthCondition> healthCondition;
 
-    @OneToMany(mappedBy = "user")
-    Set<UserSchedule> userSchedules;
-
-    @OneToMany(mappedBy = "user")
-    Set<UserDietType> userDietTypes;
 
     @Override
     @JsonDeserialize(using = CustomAuthorityDeserializer.class)
@@ -103,4 +98,6 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return isActive;
     }
+
+
 }

@@ -15,10 +15,7 @@ public class RecipeSaved {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long recipeSavedId;
-    private String recipeId;
-    private String description;
-    private String imageUrl;
-    private String recipeName;
+    private String recipeURI;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)

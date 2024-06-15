@@ -17,19 +17,19 @@ public class RecipeService {
     public RecipeSaved saveRecipe(User user, RecipeWishListDTO recipeWishListDTO){
 
         RecipeSaved recipeSaved = new RecipeSaved();
-        recipeSaved.setDescription(recipeWishListDTO.getDescription());
+//        recipeSaved.setDescription(recipeWishListDTO.getDescription());
         recipeSaved.setUser(user);
-        recipeSaved.setRecipeId(recipeWishListDTO.getRecipeId());
-        recipeSaved.setImageUrl(recipeWishListDTO.getImageUrl());
-        recipeSaved.setRecipeName(recipeWishListDTO.getRecipeName());
+        recipeSaved.setRecipeURI(recipeWishListDTO.getRecipieURI());
         return recipeSavedRepository.saveAndFlush(recipeSaved);
 
     }
-    public ArrayList<RecipeSaved> allSavedRecipes(User user){
+    public ArrayList<RecipeWishListDTO> allSavedRecipes(User user){
         Optional<ArrayList<RecipeSaved>> recipeSavedList = recipeSavedRepository.findAllByUser(user);
-        ArrayList<RecipeSaved> recipeSavedArrayList = null;
+        ArrayList<RecipeWishListDTO> recipeSavedArrayList = new ArrayList<>();
         if(recipeSavedList.isPresent()){
-            recipeSavedArrayList = recipeSavedList.get();
+            for (RecipeSaved recipeSaved:recipeSavedList.get()) {
+                recipeSavedArrayList.add(new RecipeWishListDTO(recipeSaved));
+            }
         }
         return recipeSavedArrayList;
 
