@@ -1,9 +1,11 @@
 package com.example.NutriPal;
 
 import ch.qos.logback.core.encoder.Encoder;
+import com.example.NutriPal.entity.Allergy;
 import com.example.NutriPal.entity.LogType;
 import com.example.NutriPal.entity.Role;
 import com.example.NutriPal.entity.User;
+import com.example.NutriPal.repository.AllergyRepository;
 import com.example.NutriPal.repository.LogTypeRepository;
 import com.example.NutriPal.repository.RoleRepository;
 import com.example.NutriPal.repository.UserRepository;
@@ -15,6 +17,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 @SpringBootApplication
 @EnableScheduling
@@ -26,6 +30,8 @@ public class NutriPalApplication implements CommandLineRunner {
 	@Autowired
 	private LogTypeRepository logTypeRepository;
 	@Autowired
+	private AllergyRepository allergyRepository;
+	@Autowired
 	private PasswordEncoder passwordEncoder;
 	public static void main(String[] args) {
 		SpringApplication.run(NutriPalApplication.class, args);
@@ -35,6 +41,8 @@ public class NutriPalApplication implements CommandLineRunner {
 		if(userRepository.count() == 0) {
 			Role roleAdmin = new Role(null, "ADMIN");
 			Role roleUser = new Role(null, "USER");
+
+
 
 			User userAdmin = User.builder()
 					.gymID("testAdmin")
@@ -47,6 +55,14 @@ public class NutriPalApplication implements CommandLineRunner {
 					.isActive(true)
 					.role(roleAdmin)
 					.build();
+			Allergy allergygluten = new Allergy("gluen");
+			Allergy allergyseafood = new Allergy("seafood");
+			Allergy allergybean = new Allergy("bean");
+
+			Set<Allergy> allergySet = new HashSet<>();
+			allergySet.add(allergygluten);
+			allergySet.add(allergyseafood);
+			allergySet.add(allergybean);
 
 			User user = User.builder()
 					.gymID("testUser")
@@ -55,11 +71,13 @@ public class NutriPalApplication implements CommandLineRunner {
 					.email("hasithalakmal0617@gmail.com")
 					.password(passwordEncoder.encode("1234"))
 					.weight(80.0)
+					.allergy(allergySet)
 					.isDeleted(false)
 					.isActive(true)
 					.role(roleUser)
 					.build();
 
+			allergyRepository.saveAll(allergySet);
 			roleRepository.save(roleAdmin);
 			roleRepository.save(roleUser);
 			userRepository.save(userAdmin);

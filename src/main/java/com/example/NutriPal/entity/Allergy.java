@@ -7,18 +7,25 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Set;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class HealthConditionType {
+public class Allergy {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long healthConditionTypeId;
+    private Long allergyId;
 
-    @NotBlank(message = "Health condition type is required")
-    private String type;
+    private String allergyName;
 
+//    @ManyToMany
+//    private Set<User> user;
+
+    public Allergy(String allergyName) {
+        this.allergyName = allergyName;
+    }
 }

@@ -6,8 +6,12 @@ import java.util.*;
 import com.example.NutriPal.config.JwtService;
 import com.example.NutriPal.dto.AuthenticationRequest;
 import com.example.NutriPal.dto.AuthenticationResponse;
+import com.example.NutriPal.entity.Allergy;
+import com.example.NutriPal.entity.NCD;
 import com.example.NutriPal.entity.Role;
 import com.example.NutriPal.entity.User;
+import com.example.NutriPal.repository.AllergyRepository;
+import com.example.NutriPal.repository.NCDRepository;
 import com.example.NutriPal.repository.RoleRepository;
 import com.example.NutriPal.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +34,8 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
     private final JavaMailSender emailSender;
+    private final AllergyRepository allergyRepository;
+    private final NCDRepository ncdRepository;
 
     @Value("${spring.mail.noreply}")
     private String noReplyEMail;
@@ -73,6 +79,12 @@ public class AuthService {
         return Map.of("data", userPage.stream().toList(), "count", userPage.getTotalElements());
     }
 
+    public List<Allergy> loadALLAllergy (){
+        return allergyRepository.findAll();
+    }
+    public List<NCD> loadALLNCD (){
+        return ncdRepository.findAll();
+    }
     public User getUserById(User user){
         return userRepository.findById(user.getUserId()).get();
     }

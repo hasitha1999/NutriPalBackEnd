@@ -11,17 +11,14 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class HealthCondition {
+public class NCD {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long conditionId;
+    private Long ncdId;
 
-    private String conditionName;
-
-    @ManyToOne
-    @JoinColumn(name = "health_Condition_Type_Id", nullable = false)
-    private HealthConditionType healthConditionType;
+    private String ncdName;
 
 //    @ManyToMany
-//    Set<User> user;
+//    private Set<User> user;
+
 }

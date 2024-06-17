@@ -2,6 +2,8 @@ package com.example.NutriPal.controller;
 
 import com.example.NutriPal.dto.AuthenticationRequest;
 import com.example.NutriPal.dto.AuthenticationResponse;
+import com.example.NutriPal.entity.Allergy;
+import com.example.NutriPal.entity.NCD;
 import com.example.NutriPal.entity.User;
 import com.example.NutriPal.service.AuthService;
 import jakarta.validation.Valid;
@@ -45,16 +47,23 @@ public class AuthController {
         }
     }
 
+    @GetMapping("/getAllNCD")
+    public ResponseEntity<List<NCD>> getAllNCD() {
+        try {
+            return ResponseEntity.ok(authService.loadALLNCD());
+        } catch(Exception ex) {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
-//    @PostMapping("/email-verification/{verificationToken}")
-//    public ResponseEntity<AuthenticationResponse> emailVerification(@PathVariable String verificationToken) {
-//
-//        try {
-//            return ResponseEntity.ok(authService.verifyUserAndCreate(verificationToken));
-//        } catch (Exception e) {
-//            return ResponseEntity.badRequest().build();
-//        }
-//    }
+    @GetMapping("/getAllAllergies")
+    public ResponseEntity<List<Allergy>> getAllAllergies() {
+        try {
+            return ResponseEntity.ok(authService.loadALLAllergy());
+        } catch(Exception ex) {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponse> login(@RequestBody AuthenticationRequest authenticationRequest) {

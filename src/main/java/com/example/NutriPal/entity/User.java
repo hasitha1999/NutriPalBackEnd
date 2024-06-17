@@ -65,10 +65,11 @@ public class User implements UserDetails {
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
-//    @ManyToMany
-//    Set<HealthCondition> healthCondition;
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Set<Allergy> allergy;
 
-
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Set<NCD> ncd;
     @Override
     @JsonDeserialize(using = CustomAuthorityDeserializer.class)
     public Collection<? extends GrantedAuthority> getAuthorities() {
