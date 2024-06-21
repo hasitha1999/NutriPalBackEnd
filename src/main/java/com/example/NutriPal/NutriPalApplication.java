@@ -5,10 +5,7 @@ import com.example.NutriPal.entity.Allergy;
 import com.example.NutriPal.entity.LogType;
 import com.example.NutriPal.entity.Role;
 import com.example.NutriPal.entity.User;
-import com.example.NutriPal.repository.AllergyRepository;
-import com.example.NutriPal.repository.LogTypeRepository;
-import com.example.NutriPal.repository.RoleRepository;
-import com.example.NutriPal.repository.UserRepository;
+import com.example.NutriPal.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -16,6 +13,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -33,6 +31,7 @@ public class NutriPalApplication implements CommandLineRunner {
 	private AllergyRepository allergyRepository;
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+
 	public static void main(String[] args) {
 		SpringApplication.run(NutriPalApplication.class, args);
 	}
@@ -45,7 +44,7 @@ public class NutriPalApplication implements CommandLineRunner {
 
 
 			User userAdmin = User.builder()
-					.gymID("testAdmin")
+					.gymID("admin202406")
 					.firstName("Test")
 					.lastName("Admin")
 					.email("testadmin@gmail.com")
@@ -65,7 +64,7 @@ public class NutriPalApplication implements CommandLineRunner {
 			allergySet.add(allergybean);
 
 			User user = User.builder()
-					.gymID("testUser")
+					.gymID("user202406")
 					.firstName("Test")
 					.lastName("User")
 					.email("hasithalakmal0617@gmail.com")
@@ -92,19 +91,36 @@ public class NutriPalApplication implements CommandLineRunner {
 					.type("Water")
 					.build();
 
-			LogType logTypeCalorie = LogType.builder()
-					.type("Calorie")
-					.build();
+//			LogType logTypeCalorie = LogType.builder()
+//					.type("Calorie")
+//					.build();
 
 			LogType logTypeWeight = LogType.builder()
 					.type("Weight")
 					.build();
 
+			LogType logTypeFat = LogType.builder()
+					.type("Fat")
+					.build();
+
+			LogType logTypeProtein = LogType.builder()
+					.type("Protein")
+					.build();
+
+			LogType logTypeCarbohydrate = LogType.builder()
+					.type("Carbohydrate")
+					.build();
+
 			logTypesList.add(logTypeWater);
-			logTypesList.add(logTypeCalorie);
+//			logTypesList.add(logTypeCalorie);
 			logTypesList.add(logTypeWeight);
+			logTypesList.add(logTypeFat);
+			logTypesList.add(logTypeProtein);
+			logTypesList.add(logTypeCarbohydrate);
 
 			logTypeRepository.saveAllAndFlush(logTypesList);
+
+
 		}
 	}
 
