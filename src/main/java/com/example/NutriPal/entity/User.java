@@ -46,9 +46,11 @@ public class User implements UserDetails {
     private String phone;
     private String goal;
 
-    private int activeLevel;
+    private double activeLevel;
     private double weight;
     private double height;
+
+    private String dietType;
 
     @NotBlank(message = "Email is required")
     @Email(message = "Email is not valid", regexp = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$")
