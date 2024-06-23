@@ -10,6 +10,6 @@ import lombok.*;
 public class ChartDataDto {
 
     private double value;
-    private String logType;
+    private String label;
 
 }
