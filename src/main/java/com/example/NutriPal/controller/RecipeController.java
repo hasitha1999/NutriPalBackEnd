@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -41,8 +42,26 @@ public class RecipeController {
             return ResponseEntity.badRequest().build();
         }
     }
+    @PostMapping("/markAsEat")
+    public ResponseEntity<RecipeSaved> saveAsEat(Authentication authentication, @RequestBody RecipeWishListDTO recipeWishListDTO) {
+        try {
+            User user = (User) authentication.getPrincipal();
+            return ResponseEntity.ok(recipeService.saveRecipe(user,recipeWishListDTO));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+    @PostMapping("/removeRecipe")
+    public ResponseEntity<RecipeSaved> removeRecipe(@RequestBody RecipeWishListDTO recipeWishListDTO) {
+        try {
+            recipeService.removeFav(recipeWishListDTO);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
     @PostMapping("/getAllSavedRecipes")
-    public ResponseEntity<ArrayList<RecipeWishListDTO>> saveRecipe(Authentication authentication) {
+    public ResponseEntity<ArrayList<HashMap<String,RecipeWishListDTO>>> saveRecipe(Authentication authentication) {
         try {
             User user = (User) authentication.getPrincipal();
             return ResponseEntity.ok(recipeService.allSavedRecipes(user));

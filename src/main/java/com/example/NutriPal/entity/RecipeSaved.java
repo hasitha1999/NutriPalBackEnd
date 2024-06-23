@@ -14,8 +14,12 @@ import lombok.NoArgsConstructor;
 public class RecipeSaved {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long recipeSavedId;
-    private String recipeURI;
+    private Long recipeId;
+    @Column(length = 2000)
+    private String image;
+    private String title;
+    @Column(length = 5000)
+    private String itemData;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)

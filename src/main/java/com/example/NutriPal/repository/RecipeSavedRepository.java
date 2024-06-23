@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.ArrayList;
 import java.util.Optional;
 
-public interface RecipeSavedRepository extends JpaRepository<RecipeSaved, Integer> {
+public interface RecipeSavedRepository extends JpaRepository<RecipeSaved, Long> {
 
     Optional<ArrayList<RecipeSaved>> findAllByUser(User user);
 }

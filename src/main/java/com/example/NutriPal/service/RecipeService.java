@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Optional;
 
 @Service
@@ -17,21 +18,29 @@ public class RecipeService {
     public RecipeSaved saveRecipe(User user, RecipeWishListDTO recipeWishListDTO){
 
         RecipeSaved recipeSaved = new RecipeSaved();
-//        recipeSaved.setDescription(recipeWishListDTO.getDescription());
         recipeSaved.setUser(user);
-        recipeSaved.setRecipeURI(recipeWishListDTO.getRecipieURI());
+        recipeSaved.setImage(recipeWishListDTO.getImage());
+        recipeSaved.setTitle(recipeWishListDTO.getTitle());
+        recipeSaved.setItemData(recipeWishListDTO.getItemData());
         return recipeSavedRepository.saveAndFlush(recipeSaved);
 
     }
-    public ArrayList<RecipeWishListDTO> allSavedRecipes(User user){
+    public ArrayList<HashMap<String,RecipeWishListDTO>> allSavedRecipes(User user){
         Optional<ArrayList<RecipeSaved>> recipeSavedList = recipeSavedRepository.findAllByUser(user);
-        ArrayList<RecipeWishListDTO> recipeSavedArrayList = new ArrayList<>();
+        ArrayList<HashMap<String,RecipeWishListDTO>> recipeSavedArrayList = new ArrayList<>();
         if(recipeSavedList.isPresent()){
             for (RecipeSaved recipeSaved:recipeSavedList.get()) {
-                recipeSavedArrayList.add(new RecipeWishListDTO(recipeSaved));
+                HashMap<String,RecipeWishListDTO> recipeMap = new HashMap<>();
+                recipeMap.put("recipe",new RecipeWishListDTO(recipeSaved));
+                recipeSavedArrayList.add(recipeMap);
             }
         }
         return recipeSavedArrayList;
+
+    }
+    public void removeFav( RecipeWishListDTO recipeWishListDTO){
+        RecipeSaved recipeSaved = recipeSavedRepository.findById(recipeWishListDTO.getRecipeId()).get();
+        recipeSavedRepository.delete(recipeSaved);
 
     }
 
