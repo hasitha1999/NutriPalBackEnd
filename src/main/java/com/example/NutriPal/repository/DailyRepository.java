@@ -27,4 +27,5 @@ public interface DailyRepository extends JpaRepository <DailyLog,Long> {
     ChartDataDto getChartData(LocalDate startDate, LocalDate endDate, Long logType, Long userId);
 
 
+
 }
