@@ -1,10 +1,7 @@
 package com.example.NutriPal;
 
 import ch.qos.logback.core.encoder.Encoder;
-import com.example.NutriPal.entity.Allergy;
-import com.example.NutriPal.entity.LogType;
-import com.example.NutriPal.entity.Role;
-import com.example.NutriPal.entity.User;
+import com.example.NutriPal.entity.*;
 import com.example.NutriPal.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -31,6 +28,8 @@ public class NutriPalApplication implements CommandLineRunner {
 	private AllergyRepository allergyRepository;
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+	@Autowired
+	private DietTypeRepository dietTypeRepository;
 
 	public static void main(String[] args) {
 		SpringApplication.run(NutriPalApplication.class, args);
@@ -91,9 +90,9 @@ public class NutriPalApplication implements CommandLineRunner {
 					.type("Water")
 					.build();
 
-//			LogType logTypeCalorie = LogType.builder()
-//					.type("Calorie")
-//					.build();
+			LogType logTypeCalorie = LogType.builder()
+					.type("Calorie")
+					.build();
 
 			LogType logTypeWeight = LogType.builder()
 					.type("Weight")
@@ -112,7 +111,7 @@ public class NutriPalApplication implements CommandLineRunner {
 					.build();
 
 			logTypesList.add(logTypeWater);
-//			logTypesList.add(logTypeCalorie);
+			logTypesList.add(logTypeCalorie);
 			logTypesList.add(logTypeWeight);
 			logTypesList.add(logTypeFat);
 			logTypesList.add(logTypeProtein);
@@ -120,6 +119,22 @@ public class NutriPalApplication implements CommandLineRunner {
 
 			logTypeRepository.saveAllAndFlush(logTypesList);
 
+
+		}
+		if(dietTypeRepository.count() == 0){
+			ArrayList<DietType> dietTypesList = new ArrayList<>();
+
+			DietType dietType1 = DietType.builder().dietName("balanced").build();
+			DietType dietType2 = DietType.builder().dietName("high-protein").build();
+			DietType dietType3 = DietType.builder().dietName("low-carb").build();
+			DietType dietType4 = DietType.builder().dietName("low-fat").build();
+
+			dietTypesList.add(dietType1);
+			dietTypesList.add(dietType2);
+			dietTypesList.add(dietType3);
+			dietTypesList.add(dietType4);
+
+			dietTypeRepository.saveAllAndFlush(dietTypesList);
 
 		}
 	}

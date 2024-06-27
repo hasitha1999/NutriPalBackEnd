@@ -69,9 +69,6 @@ public class User implements UserDetails {
 
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Allergy> allergy;
-
-    @ManyToMany(fetch = FetchType.EAGER)
-    private Set<NCD> ncd;
     @Override
     @JsonDeserialize(using = CustomAuthorityDeserializer.class)
     public Collection<? extends GrantedAuthority> getAuthorities() {

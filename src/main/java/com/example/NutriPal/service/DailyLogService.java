@@ -2,6 +2,7 @@ package com.example.NutriPal.service;
 
 import com.example.NutriPal.dto.DailyLogChartDto;
 import com.example.NutriPal.dto.DailyLogDto;
+import com.example.NutriPal.dto.DailyLogEatDto;
 import com.example.NutriPal.entity.DailyLog;
 import com.example.NutriPal.entity.LogType;
 import com.example.NutriPal.entity.User;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -39,6 +41,42 @@ public class DailyLogService {
 
 
         return dailyRepository.saveAndFlush(dailyLog);
+    }
+    public List<DailyLog> createDailyEatLog(User user, DailyLogEatDto dailyLogEatDto){
+        LogType fat = logTypeRepository.findByType("Fat").get();
+        LogType carb = logTypeRepository.findByType("Carbohydrate").get();
+        LogType protein = logTypeRepository.findByType("Protein").get();
+
+        LocalDate date = LocalDate.now();
+        DailyLog dailyLogFat;
+        DailyLog dailyLogCarb;
+        DailyLog dailyLogProtein;
+
+        if(dailyRepository.findByCreatedAtAndLogType(date,fat).isPresent()){
+            dailyLogFat = dailyRepository.findByCreatedAtAndLogType(date,fat).get();
+            dailyLogFat.setInputData(dailyLogFat.getInputData() + dailyLogEatDto.getFat());
+        }else{
+            dailyLogFat = DailyLog.builder().user(user).logType(fat).inputData(dailyLogEatDto.getFat()).build();
+        }
+        if(dailyRepository.findByCreatedAtAndLogType(date,fat).isPresent()){
+            dailyLogCarb = dailyRepository.findByCreatedAtAndLogType(date,carb).get();
+            dailyLogCarb.setInputData(dailyLogCarb.getInputData() + dailyLogEatDto.getCarbs());
+        }else{
+            dailyLogCarb = DailyLog.builder().user(user).logType(carb).inputData(dailyLogEatDto.getCarbs()).build();
+        }
+        if(dailyRepository.findByCreatedAtAndLogType(date,fat).isPresent()){
+            dailyLogProtein = dailyRepository.findByCreatedAtAndLogType(date,protein).get();
+            dailyLogProtein.setInputData(dailyLogProtein.getInputData() + dailyLogEatDto.getProtein());
+        }else{
+            dailyLogProtein = DailyLog.builder().user(user).logType(protein).inputData(dailyLogEatDto.getProtein()).build();
+        }
+
+        ArrayList<DailyLog> dailyLogList = new ArrayList<>();
+        dailyLogList.add(dailyLogCarb);
+        dailyLogList.add(dailyLogFat);
+        dailyLogList.add(dailyLogProtein);
+
+        return dailyRepository.saveAllAndFlush(dailyLogList);
     }
 
     public DailyLogDto getDailyLogDetailsByCurrentDate(User user, String logCategory, LocalDate dateTime){

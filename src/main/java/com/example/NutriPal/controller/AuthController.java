@@ -3,16 +3,13 @@ package com.example.NutriPal.controller;
 import com.example.NutriPal.dto.AuthenticationRequest;
 import com.example.NutriPal.dto.AuthenticationResponse;
 import com.example.NutriPal.entity.Allergy;
-import com.example.NutriPal.entity.NCD;
+import com.example.NutriPal.entity.DietType;
 import com.example.NutriPal.entity.User;
 import com.example.NutriPal.service.AuthService;
-import jakarta.validation.Valid;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -47,10 +44,10 @@ public class AuthController {
         }
     }
 
-    @GetMapping("/getAllNCD")
-    public ResponseEntity<List<NCD>> getAllNCD() {
+    @GetMapping("/getAllDietType")
+    public ResponseEntity<List<DietType>> getAllDietType() {
         try {
-            return ResponseEntity.ok(authService.loadALLNCD());
+            return ResponseEntity.ok(authService.loadAllDietType());
         } catch(Exception ex) {
             return ResponseEntity.notFound().build();
         }
@@ -78,6 +75,10 @@ public class AuthController {
     @PostMapping("/resetPassword")
     public ResponseEntity<String> forgotPasswordReset(@RequestBody AuthenticationRequest authenticationRequest) {
         return ResponseEntity.ok(authService.passwordReset(authenticationRequest));
+    }
+    @PostMapping("/passwordChange")
+    public ResponseEntity<String> changePassword(@RequestBody AuthenticationRequest authenticationRequest) {
+        return ResponseEntity.ok(authService.passwordChange(authenticationRequest));
     }
 
 }

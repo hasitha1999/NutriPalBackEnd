@@ -1,10 +1,15 @@
 package com.example.NutriPal.controller;
 
+import com.example.NutriPal.dto.DailyLogDto;
+import com.example.NutriPal.dto.DailyLogEatDto;
 import com.example.NutriPal.dto.NutritionDetailsRequest;
 import com.example.NutriPal.dto.RecipeWishListDTO;
+import com.example.NutriPal.entity.DailyLog;
+import com.example.NutriPal.entity.LogType;
 import com.example.NutriPal.entity.RecipeSaved;
 import com.example.NutriPal.entity.User;
 import com.example.NutriPal.service.APIService;
+import com.example.NutriPal.service.DailyLogService;
 import com.example.NutriPal.service.RecipeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +29,7 @@ import java.util.Map;
 public class RecipeController {
     private final APIService apiService;
     private final RecipeService recipeService;
+    private final DailyLogService dailyLogService;
 
     @PostMapping("/getNutritionDetails")
     public ResponseEntity<Map> getNutritionDetailsApi(@RequestBody NutritionDetailsRequest nutritionDetailsRequest) {
@@ -43,10 +49,10 @@ public class RecipeController {
         }
     }
     @PostMapping("/markAsEat")
-    public ResponseEntity<RecipeSaved> saveAsEat(Authentication authentication, @RequestBody RecipeWishListDTO recipeWishListDTO) {
+    public ResponseEntity<?> saveAsEat(Authentication authentication, @RequestBody DailyLogEatDto dailyLogEatDto) {
         try {
             User user = (User) authentication.getPrincipal();
-            return ResponseEntity.ok(recipeService.saveRecipe(user,recipeWishListDTO));
+            return ResponseEntity.ok(dailyLogService.createDailyEatLog(user,dailyLogEatDto));
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }

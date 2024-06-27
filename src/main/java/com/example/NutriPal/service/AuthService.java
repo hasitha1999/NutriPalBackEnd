@@ -7,11 +7,11 @@ import com.example.NutriPal.config.JwtService;
 import com.example.NutriPal.dto.AuthenticationRequest;
 import com.example.NutriPal.dto.AuthenticationResponse;
 import com.example.NutriPal.entity.Allergy;
-import com.example.NutriPal.entity.NCD;
+import com.example.NutriPal.entity.DietType;
 import com.example.NutriPal.entity.Role;
 import com.example.NutriPal.entity.User;
 import com.example.NutriPal.repository.AllergyRepository;
-import com.example.NutriPal.repository.NCDRepository;
+import com.example.NutriPal.repository.DietTypeRepository;
 import com.example.NutriPal.repository.RoleRepository;
 import com.example.NutriPal.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +35,7 @@ public class AuthService {
     private final RoleRepository roleRepository;
     private final JavaMailSender emailSender;
     private final AllergyRepository allergyRepository;
-    private final NCDRepository ncdRepository;
+    private final DietTypeRepository dietTypeRepository;
 
     @Value("${spring.mail.noreply}")
     private String noReplyEMail;
@@ -82,8 +82,8 @@ public class AuthService {
     public List<Allergy> loadALLAllergy (){
         return allergyRepository.findAll();
     }
-    public List<NCD> loadALLNCD (){
-        return ncdRepository.findAll();
+    public List<DietType> loadAllDietType (){
+        return dietTypeRepository.findAll();
     }
     public User getUserById(User user){
         return userRepository.findById(user.getUserId()).get();
@@ -123,6 +123,13 @@ public class AuthService {
             return "Password Resetting Link Was Expired..!";
         }
 
+    }
+    public String passwordChange(AuthenticationRequest authenticationRequest){
+        String gymId = authenticationRequest.getGymID();
+        User user = userRepository.findByGymID(gymId).orElseThrow();
+        user.setPassword(passwordEncoder.encode(authenticationRequest.getPassword()));
+        userRepository.saveAndFlush(user);
+        return "Success";
     }
 
 

@@ -21,6 +21,8 @@ public interface DailyRepository extends JpaRepository <DailyLog,Long> {
 
     Optional<ArrayList<DailyLog>> findByCreatedAtAfterAndUserAndLogType(LocalDate createdAt, User user, LogType logType);
 
+    Optional<DailyLog> findByCreatedAtAndLogType(LocalDate createdAt,LogType logType);
+
     @Query("Select new com.example.NutriPal.dto.ChartDataDto(sum(d.inputData), d.logType.type) from DailyLog d where d.createdAt between ?1 and ?2 and d.logType.logTypeId = ?3 and d.user.userId = ?4 group by d.logType.logTypeId")
     ChartDataDto getChartData(LocalDate startDate, LocalDate endDate, Long logType, Long userId);
 
