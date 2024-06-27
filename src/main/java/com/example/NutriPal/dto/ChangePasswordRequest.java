@@ -5,15 +5,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-import java.util.List;
-
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class DailyLogChartDto {
-    private List<LocalDate> x;
-    private List<Double> y;
+public class ChangePasswordRequest {
 
+    private String password;
+    private String currentPassword;
 }

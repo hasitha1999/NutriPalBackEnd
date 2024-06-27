@@ -6,6 +6,7 @@ import java.util.*;
 import com.example.NutriPal.config.JwtService;
 import com.example.NutriPal.dto.AuthenticationRequest;
 import com.example.NutriPal.dto.AuthenticationResponse;
+import com.example.NutriPal.dto.ChangePasswordRequest;
 import com.example.NutriPal.entity.Allergy;
 import com.example.NutriPal.entity.DietType;
 import com.example.NutriPal.entity.Role;
@@ -53,9 +54,9 @@ public class AuthService {
             user.setPassword(passwordEncoder.encode("1234"));
         }
         user.setRole(roleUser);
-       User savedUser =  userRepository.saveAndFlush(user);
+        User savedUser =  userRepository.saveAndFlush(user);
 
-       return savedUser;
+        return savedUser;
     }
     public AuthenticationResponse authenticate(AuthenticationRequest authenticationRequest) {
 
@@ -104,7 +105,7 @@ public class AuthService {
             );
             emailSender.send(message);
         });
-            emailThread.start();
+        emailThread.start();
     }
     public String passwordReset(AuthenticationRequest authenticationRequest){
         String decoded = new String(Base64.getDecoder().decode(authenticationRequest.getGymID()));
@@ -124,12 +125,16 @@ public class AuthService {
         }
 
     }
-    public String passwordChange(AuthenticationRequest authenticationRequest){
-        String gymId = authenticationRequest.getGymID();
+    public String passwordChange(ChangePasswordRequest changePasswordRequest, String gymId){
         User user = userRepository.findByGymID(gymId).orElseThrow();
-        user.setPassword(passwordEncoder.encode(authenticationRequest.getPassword()));
-        userRepository.saveAndFlush(user);
-        return "Success";
+
+//        if(user.getPassword().equals(passwordEncoder.encode(changePasswordRequest.getCurrentPassword()))) {
+            user.setPassword(passwordEncoder.encode(changePasswordRequest.getPassword()));
+            userRepository.saveAndFlush(user);
+            return "Success";
+//        } else {
+//            return "Wrong Password";
+//        }
     }
 
 

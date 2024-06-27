@@ -2,6 +2,7 @@ package com.example.NutriPal.controller;
 
 import com.example.NutriPal.dto.AuthenticationRequest;
 import com.example.NutriPal.dto.AuthenticationResponse;
+import com.example.NutriPal.dto.ChangePasswordRequest;
 import com.example.NutriPal.entity.Allergy;
 import com.example.NutriPal.entity.DietType;
 import com.example.NutriPal.entity.User;
@@ -9,7 +10,10 @@ import com.example.NutriPal.service.AuthService;
 
 import java.util.List;
 import java.util.Map;
+
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -22,12 +26,12 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/createOrUpdateUser")
-    public ResponseEntity<User> addUser(@RequestBody User user) {
-                try {
-                    return ResponseEntity.ok(authService.addUser(user));
-                } catch (Exception e) {
-                    return ResponseEntity.badRequest().build();
-                }
+    public ResponseEntity<User> addUser(@Valid @RequestBody User user) {
+        try {
+            return ResponseEntity.ok(authService.addUser(user));
+        } catch (Exception e) {
+            return new ResponseEntity(e, HttpStatusCode.valueOf(400));
+        }
     }
     @GetMapping("/getAllUsers")
     public Map<String, Object> users(@RequestParam int pageNumber, @RequestParam int pageSize, @RequestParam String globalFilter) {
@@ -77,8 +81,9 @@ public class AuthController {
         return ResponseEntity.ok(authService.passwordReset(authenticationRequest));
     }
     @PostMapping("/passwordChange")
-    public ResponseEntity<String> changePassword(@RequestBody AuthenticationRequest authenticationRequest) {
-        return ResponseEntity.ok(authService.passwordChange(authenticationRequest));
+    public ResponseEntity<String> changePassword(Authentication authentication, @RequestBody ChangePasswordRequest changePasswordRequest) {
+        User user = (User) authentication.getPrincipal();
+        return ResponseEntity.ok(authService.passwordChange(changePasswordRequest, user.getGymID()));
     }
 
 }

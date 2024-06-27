@@ -16,6 +16,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -34,7 +35,7 @@ public class DailyLogService {
             dailyLog = dailyRepository.findById(dailyLogDto.getLogId()).get();
             dailyLog.setInputData(dailyLogDto.getUserInput());
         }
-        if (logType.getType() == "Weight"){
+        if (Objects.equals(logType.getType(), "Weight")){
             user.setWeight(dailyLogDto.getUserInput());
             userRepository.saveAndFlush(user);
         }
@@ -46,11 +47,13 @@ public class DailyLogService {
         LogType fat = logTypeRepository.findByType("Fat").get();
         LogType carb = logTypeRepository.findByType("Carbohydrate").get();
         LogType protein = logTypeRepository.findByType("Protein").get();
+        LogType calorie = logTypeRepository.findByType("Calorie").get();
 
         LocalDate date = LocalDate.now();
         DailyLog dailyLogFat;
         DailyLog dailyLogCarb;
         DailyLog dailyLogProtein;
+        DailyLog dailyLogCalorie;
 
         if(dailyRepository.findByCreatedAtAndLogType(date,fat).isPresent()){
             dailyLogFat = dailyRepository.findByCreatedAtAndLogType(date,fat).get();
@@ -70,11 +73,18 @@ public class DailyLogService {
         }else{
             dailyLogProtein = DailyLog.builder().user(user).logType(protein).inputData(dailyLogEatDto.getProtein()).build();
         }
+        if(dailyRepository.findByCreatedAtAndLogType(date,calorie).isPresent()){
+            dailyLogCalorie = dailyRepository.findByCreatedAtAndLogType(date,calorie).get();
+            dailyLogCalorie.setInputData(dailyLogProtein.getInputData() + dailyLogEatDto.getCalorie());
+        }else{
+            dailyLogCalorie = DailyLog.builder().user(user).logType(calorie).inputData(dailyLogEatDto.getCalorie()).build();
+        }
 
         ArrayList<DailyLog> dailyLogList = new ArrayList<>();
         dailyLogList.add(dailyLogCarb);
         dailyLogList.add(dailyLogFat);
         dailyLogList.add(dailyLogProtein);
+        dailyLogList.add(dailyLogCalorie);
 
         return dailyRepository.saveAllAndFlush(dailyLogList);
     }
@@ -93,23 +103,25 @@ public class DailyLogService {
 
          return dailyLogDto;
     }
-    public ArrayList<DailyLogChartDto> getDailyLogDataList(User user, String logCategory, LocalDate dateTime){
+    public DailyLogChartDto getDailyLogDataList(User user, String logCategory, LocalDate dateTime){
         LogType logType = logTypeRepository.findByType(logCategory).get();
         Optional<ArrayList<DailyLog>> dailyLogOptional = dailyRepository.findByCreatedAtAfterAndUserAndLogType(dateTime,user,logType);
-        ArrayList<DailyLogChartDto> dailyLogList = new ArrayList<>();
-
+        ArrayList<LocalDate> dateList = new ArrayList<>();
+        ArrayList<Double> userInputValueList = new ArrayList<>();
+        DailyLogChartDto dailyLogChartDto;
         if(dailyLogOptional.isPresent()){
             for (DailyLog logElement: dailyLogOptional.get()) {
-                DailyLogChartDto dailyLogChartDto = DailyLogChartDto.builder().date(logElement.getCreatedAt()).userInputValue(logElement.getInputData()).build();
-                dailyLogList.add(dailyLogChartDto);
-
+                dateList.add(logElement.getCreatedAt());
+                userInputValueList.add(logElement.getInputData());
             }
+            dailyLogChartDto = DailyLogChartDto.builder().x(dateList).y(userInputValueList).build();
 
         }else{
-            dailyLogList = null;
+            dailyLogChartDto = null;
         }
-        return  dailyLogList;
+        return  dailyLogChartDto;
 
     }
+
 
 }

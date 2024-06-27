@@ -2,6 +2,7 @@ package com.example.NutriPal.controller;
 
 import com.example.NutriPal.dto.DailyLogChartDto;
 import com.example.NutriPal.dto.DailyLogDto;
+import com.example.NutriPal.dto.DailyLogEatDto;
 import com.example.NutriPal.entity.DailyLog;
 import com.example.NutriPal.entity.User;
 import com.example.NutriPal.service.DailyLogService;
@@ -43,11 +44,11 @@ public class DailyLogController {
         }
     }
     @PostMapping("/getDailyLogDataListByMonth/{logType}")
-    public ResponseEntity<ArrayList<DailyLogChartDto>> getDailyLogDataListByMonth(Authentication authentication, @PathVariable String logType){
+    public ResponseEntity<DailyLogChartDto> getDailyLogDataListByMonth(Authentication authentication, @PathVariable String logType){
         try {
             User user = (User) authentication.getPrincipal();
             LocalDate dateTime = LocalDateTime.now().toLocalDate().minusMonths(1);
-            ArrayList<DailyLogChartDto> dailyLogOptional =  dailyLogService.getDailyLogDataList(user,logType,dateTime);
+            DailyLogChartDto dailyLogOptional =  dailyLogService.getDailyLogDataList(user,logType,dateTime);
             return ResponseEntity.ok(dailyLogOptional);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
