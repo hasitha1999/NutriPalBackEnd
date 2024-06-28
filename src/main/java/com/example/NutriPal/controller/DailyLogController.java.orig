@@ -1,6 +1,12 @@
 package com.example.NutriPal.controller;
 
+<<<<<<< HEAD
+import com.example.NutriPal.dto.DailyLogChartDto;
+import com.example.NutriPal.dto.DailyLogDto;
+import com.example.NutriPal.dto.DailyLogEatDto;
+=======
 import com.example.NutriPal.dto.*;
+>>>>>>> ebca694ef77baeda9ea7b7e9d4e3f68a032bd408
 import com.example.NutriPal.entity.DailyLog;
 import com.example.NutriPal.entity.User;
 import com.example.NutriPal.service.DailyLogService;
