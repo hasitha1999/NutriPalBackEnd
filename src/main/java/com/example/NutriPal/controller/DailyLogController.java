@@ -1,8 +1,6 @@
 package com.example.NutriPal.controller;
 
-import com.example.NutriPal.dto.DailyLogChartDto;
-import com.example.NutriPal.dto.DailyLogDto;
-import com.example.NutriPal.dto.DailyLogEatDto;
+import com.example.NutriPal.dto.*;
 import com.example.NutriPal.entity.DailyLog;
 import com.example.NutriPal.entity.User;
 import com.example.NutriPal.service.DailyLogService;
@@ -44,13 +42,37 @@ public class DailyLogController {
         }
     }
     @PostMapping("/getDailyLogDataListByMonth/{logType}")
-    public ResponseEntity<DailyLogChartDto> getDailyLogDataListByMonth(Authentication authentication, @PathVariable String logType){
+    public ResponseEntity<ArrayList<DailyLogChartDto>> getDailyLogDataListByMonth(Authentication authentication, @PathVariable String logType){
         try {
             User user = (User) authentication.getPrincipal();
             LocalDate dateTime = LocalDateTime.now().toLocalDate().minusMonths(1);
-            DailyLogChartDto dailyLogOptional =  dailyLogService.getDailyLogDataList(user,logType,dateTime);
+            ArrayList<DailyLogChartDto> dailyLogOptional =  dailyLogService.getDailyLogDataList(user,logType,dateTime);
             return ResponseEntity.ok(dailyLogOptional);
         } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @PostMapping("/getAverageWaterValue")
+    public ResponseEntity<AverageWaterValueDto> getAverageWaterLevels(Authentication authentication, @RequestBody AverageValueRequest averageValueRequest){
+
+        try{
+            User user = (User) authentication.getPrincipal();
+            AverageWaterValueDto averageWaterData = dailyLogService.getAverageWaterIntake(averageValueRequest.getTimeGap(), user);
+            return ResponseEntity.ok(averageWaterData);
+        }catch (Exception e){
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @PostMapping("/getWeekWaterIntakeData")
+    public ResponseEntity<ArrayList<DailyWaterLogDto>> getWeekWaterIntakeData(Authentication authentication){
+        try{
+            User user = (User) authentication.getPrincipal();
+            ArrayList<DailyWaterLogDto> weekWaterIntakeDataList = dailyLogService.getWeekWaterIntakeData(user);
+            return ResponseEntity.ok(weekWaterIntakeDataList);
+
+        }catch (Exception e){
             return ResponseEntity.badRequest().build();
         }
     }
